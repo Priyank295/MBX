@@ -83,14 +83,14 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          // Center(
-          //   child: RaisedButton(
-          //     onPressed: () {
-          //       signOut();
-          //     },
-          //     child: Text("Sign out"),
-          //   ),
-          // )
+          Center(
+            child: RaisedButton(
+              onPressed: () {
+                signOut();
+              },
+              child: Text("Sign out"),
+            ),
+          )
           // Center(
           //     child: Lottie.asset("assets/loading.json",
           //         frameRate: FrameRate(60), height: 250, width: 250)),
