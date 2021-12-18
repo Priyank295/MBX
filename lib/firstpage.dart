@@ -25,7 +25,11 @@ class _FirstPageState extends State<FirstPage> {
     return Scaffold(
       body: Stack(
         children: [
-          SvgPicture.asset("assets/vector1.svg"),
+          SvgPicture.asset(
+            "f/vector1.svg",
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+          ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

@@ -18,7 +18,7 @@ void main() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   var email = sharedPreferences.getString('email');
   runApp(MaterialApp(
-    home: email == null ? LoginPage() : HomePage(),
+    home: email == null ? FirstPage() : HomePage(),
     routes: {
       "/login": (context) => LoginPage(),
       '/register': (context) => RegisterPage(),
