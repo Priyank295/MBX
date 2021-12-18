@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mbx/fill_profile.dart';
+import 'package:mbx/loginpage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import './otppage.dart';
 import 'package:flutter/services.dart';
 import 'package:email_validator/email_validator.dart';
 import './user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get/get.dart';
 
 import 'homepage.dart';
+
+String uid = "";
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -29,20 +36,23 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _isemail = true;
   bool _ispass = true;
   bool _isPhone = true;
+  bool _useEmail = false;
 
   @override
   Widget build(BuildContext context) {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
 
-    Future<void> addUser() {
-      return users
-          .add({
-            'email': email.text,
-            'phone': _phone.text,
-            'password': _pass.text,
-          })
-          .then((value) => print("User Added"))
-          .catchError((e) => print("Failed to add user: $e"));
+    Future<void> addUser() async {
+      return users.add({
+        'email': email.text,
+        'phone': _phone.text,
+        'password': _pass.text,
+      }).then((value) {
+        setState(() {
+          uid = value.id;
+        });
+        print("USER ADDED ${uid}");
+      }).catchError((e) => print("Failed to add user: $e"));
     }
 
     void loading() {
@@ -79,10 +89,16 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 Container(
                   margin: const EdgeInsets.only(top: 60, left: 20),
-                  child: SvgPicture.asset(
-                    "assets/arrow.svg",
-                    height: 18,
-                    width: 18,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => LoginPage()));
+                    },
+                    child: SvgPicture.asset(
+                      "assets/arrow.svg",
+                      height: 18,
+                      width: 18,
+                    ),
                   ),
                 ),
                 Container(
@@ -361,10 +377,15 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             InkWell(
               onTap: () async {
+                // getUid();
+
+                isEmailRegistred(email.text);
                 setState(() {
                   _loading = true;
                 });
-                if (_loading == true) {
+                if (isEmailRegistred(email.text) == true) {
+                  print("User already exist");
+                } else if (_loading == true) {
                   loading();
 
                   _phone.text.isEmpty ? _isPhone = false : _isPhone = true;
@@ -372,18 +393,17 @@ class _RegisterPageState extends State<RegisterPage> {
                   _pass.text.isEmpty ? _ispass = false : _ispass = true;
 
                   if (_isPhone == false ||
+                      // _useEmail == true ||
                       _isemail == false ||
                       _ispass == false) {
                   } else {
-                    String Phone = _phone.text;
-                    phoneNumberVerification();
+                    signUpWithEmail(email.text, _pass.text);
+                    // phoneNumberVerification();
                     addUser();
 
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => OtpPage2(
-                              phone: _phone.text,
-                              verifyCode: verificationCode,
-                            )));
+                        builder: (context) =>
+                            OtpPage2(Phone: _phone.text, uid: uid)));
 
                     setState(() {
                       _loading = false;
@@ -432,75 +452,44 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Future<void> phoneNumberVerification() async {
-    PhoneVerificationCompleted phoneVerificationCompleted =
-        (PhoneAuthCredential phoneAuthCredential) async {
-      await FirebaseAuth.instance
-          .signInWithCredential(phoneAuthCredential)
-          .then((value) async {
-        if (value.user != null) {
-          Navigator.pushAndRemoveUntil(context,
-              MaterialPageRoute(builder: (c) => HomePage()), (route) => false);
-        }
-      });
-      displayMessage(
-          "Phone number is automatically verified and user signed in: ${auth.currentUser!.uid}");
-    };
-
-    PhoneVerificationFailed phoneVerificationFailed =
-        (FirebaseAuthException authException) {
-      displayMessage(
-          "Phone number verifiction is failed. Code: ${authException.code}. Message: ${authException.message}");
-    };
-
-    PhoneCodeSent phoneCodeSent =
-        (String verificationId, [int? forceResendingToken]) {
-      displayMessage("Please check your phone for the verification code");
-      setState(() {
-        verificationCode = verificationId;
-      });
-    };
-
-    PhoneCodeAutoRetrievalTimeout phoneCodeAutoRetrievalTimeout =
-        (String verificationId) {
-      displayMessage("verification code:" + verificationId);
-      setState(() {
-        verificationCode = verificationId;
-      });
-    };
-
+  Future<void> signUpWithEmail(String email, String password) async {
     try {
-      await auth.verifyPhoneNumber(
-        phoneNumber: "+91${_phone.text}",
-        verificationCompleted: phoneVerificationCompleted,
-        verificationFailed: phoneVerificationFailed,
-        codeSent: phoneCodeSent,
-        codeAutoRetrievalTimeout: phoneCodeAutoRetrievalTimeout,
-      );
-    } catch (e) {
-      displayMessage("Failed to Verify phone Number: ${e}");
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+    } on FirebaseAuthException catch (e) {}
+  }
+
+  Future<bool> isEmailRegistred(String email) async {
+    final QuerySnapshot result = await FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .limit(1)
+        .get();
+
+    final List<DocumentSnapshot> documents = result.docs;
+
+    if (documents.length > 0) {
+      return true;
+    } else {
+      return false;
     }
   }
 
-  void displayMessage(String message) {
-    _scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text(message)));
+  Future checkLogin() async {
+    final SharedPreferences sharedPreferences =
+        await SharedPreferences.getInstance();
+    sharedPreferences.setString('email', email.text);
   }
 
-  void loading() {
-    Lottie.asset(
-      "assets/loading.json",
-      frameRate: FrameRate(60),
-      height: 100,
-    );
+  // Future<void> getUid() async {
+  //   setState(() {
+  //     uid = auth.currentUser!.uid;
+  //   });
+  // }
+
+  @override
+  void initState() {
+    super.initState();
+    checkLogin();
   }
 }
-
-// mixin InputValidationMixin {
-//   bool isPasswordValid(String password) => password.length == 6;
-
-//   bool isEmailValid(String email) {
-//     Pattern pattern =  '^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-//     RegExp regex = RegExp(pattern);
-//     return regex.hasMatch(email);
-//   }
-// }

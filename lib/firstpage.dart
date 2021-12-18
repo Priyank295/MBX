@@ -1,10 +1,24 @@
-import 'dart:ui';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mbx/loginpage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import './homepage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get/get.dart';
 
-class FirstPage extends StatelessWidget {
-  const FirstPage({Key? key}) : super(key: key);
+String finalEmail = "";
+
+class FirstPage extends StatefulWidget {
+  FirstPage({Key? key}) : super(key: key);
+
+  @override
+  State<FirstPage> createState() => _FirstPageState();
+}
+
+class _FirstPageState extends State<FirstPage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -91,5 +105,42 @@ class FirstPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future getValidationData() async {
+    final SharedPreferences sharedPreferences =
+        await SharedPreferences.getInstance();
+    var obtainedEmail = sharedPreferences.getString('email');
+    setState(() {
+      finalEmail = obtainedEmail!;
+    });
+    print(finalEmail);
+  }
+
+  // _userIsSignIn() async {
+  //   if (_auth.currentUser != null) {
+  //     setState(() {
+  //       Navigator.push(
+  //           // ignore: prefer_const_constructors
+  //           context,
+  //           MaterialPageRoute(builder: (context) => const HomePage()));
+  //     });
+  //   } else {
+  //     setState(() {
+  //       Navigator.push(
+  //           // ignore: prefer_const_constructors
+  //           context,
+  //           MaterialPageRoute(builder: (context) => FirstPage()));
+  //     });
+  //   }
+  // }
+
+  @override
+  void initState() {
+    getValidationData().whenComplete(() async {
+      Get.to(finalEmail == null ? LoginPage() : HomePage());
+    });
+    // _userIsSignIn();
+    super.initState();
   }
 }

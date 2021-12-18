@@ -1,6 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:custom_check_box/custom_check_box.dart';
+import 'package:mbx/homepage.dart';
+import 'package:mbx/otppage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:email_validator/email_validator.dart';
+
+late String uid;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -9,8 +17,24 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
+TextEditingController _email = TextEditingController();
+TextEditingController _pass = TextEditingController();
+
 class _LoginPageState extends State<LoginPage> {
+  // final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool value = false;
+  String userEmail = "";
+  bool _success = false;
+  bool _isEmail = true;
+  bool _isPass = true;
+  bool isPhone(String input) =>
+      RegExp(r'^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$')
+          .hasMatch(input);
+  bool isEmail(String input) => EmailValidator.validate(input);
+  final _key = (GlobalKey<FormFieldState>());
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,7 +136,16 @@ class _LoginPageState extends State<LoginPage> {
               margin: EdgeInsets.only(left: 45),
               height: 50,
               width: 300,
-              child: TextField(
+              child: TextFormField(
+                key: _key,
+                // validator: (val) {
+                //   if (!isEmail(val!) && !isPhone(val)) {
+                //     setState(() {
+                //       _isEmail = false;
+                //     });
+                //   }
+                // },
+                controller: _email,
                 decoration: InputDecoration(
                   prefixIcon: Padding(
                     padding: const EdgeInsets.all(10.0),
@@ -120,11 +153,17 @@ class _LoginPageState extends State<LoginPage> {
                       "assets/mail.svg",
                     ),
                   ),
+                  suffixIcon: _isEmail
+                      ? SizedBox()
+                      : Padding(
+                          padding: EdgeInsets.all(12.0),
+                          child: SvgPicture.asset("assets/WarningCircle.svg"),
+                        ),
                   prefixIconConstraints: const BoxConstraints(
                     minHeight: 24,
                     minWidth: 24,
                   ),
-                  hintText: "Enter your email",
+                  hintText: "Enter your email or phone",
                   hintStyle: const TextStyle(
                     color: Color(0xFFFAEAEAE),
                     fontFamily: "Lato",
@@ -172,7 +211,14 @@ class _LoginPageState extends State<LoginPage> {
               width: 300,
               child: Material(
                 shadowColor: Color(0xFFF6342E8),
-                child: TextField(
+                child: TextFormField(
+                  // key: _formKey,
+                  controller: _pass,
+                  // validator: (val) {
+                  //   if (val!.isEmpty) {
+                  //     return "Please enter Password";
+                  //   }
+                  // },
                   decoration: InputDecoration(
                     prefixIcon: Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -180,6 +226,12 @@ class _LoginPageState extends State<LoginPage> {
                         "assets/Lock.svg",
                       ),
                     ),
+                    suffixIcon: _isPass
+                        ? SizedBox()
+                        : Padding(
+                            padding: EdgeInsets.all(12.0),
+                            child: SvgPicture.asset("assets/WarningCircle.svg"),
+                          ),
                     prefixIconConstraints: const BoxConstraints(
                       minHeight: 24,
                       minWidth: 24,
@@ -258,22 +310,53 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(
               height: 5,
             ),
-            Container(
-              margin: EdgeInsets.only(left: 45),
-              height: 54,
-              width: 300,
-              decoration: BoxDecoration(
-                color: Color(0xFFF6342E8),
-                borderRadius: BorderRadius.circular(56),
-              ),
-              child: const Center(
-                child: Text(
-                  "LOG IN",
-                  style: TextStyle(
-                    fontFamily: "Lato",
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+            GestureDetector(
+              onTap: () {
+                // final uid = _auth.currentUser!.uid;
+                if (!isEmail(_email.text) && !isPhone(_email.text)) {
+                  setState(() {
+                    _isEmail = false;
+                  });
+                }
+                _email.text.isEmpty ? _isEmail = false : _isEmail = true;
+                _pass.text.isEmpty ? _isPass = false : _isPass = true;
+
+                if (_isEmail == false || _isPass == false) {
+                  // } else if (_formKey.currentState!.validate()) {
+                } else {
+                  if (_email.text.contains("@")) {
+                    _signInWithEmail();
+                  } else {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                OtpPage2(Phone: _email.text, uid: uid)));
+                  }
+
+                  // if (_success == true) {
+                  //   Navigator.push(context,
+                  //       MaterialPageRoute(builder: (context) => HomePage()));
+                  // }
+                }
+              },
+              child: Container(
+                margin: EdgeInsets.only(left: 45),
+                height: 54,
+                width: 300,
+                decoration: BoxDecoration(
+                  color: Color(0xFFF6342E8),
+                  borderRadius: BorderRadius.circular(56),
+                ),
+                child: const Center(
+                  child: Text(
+                    "LOG IN",
+                    style: TextStyle(
+                      fontFamily: "Lato",
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
@@ -315,5 +398,48 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _signInWithEmail() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _email.text,
+        password: _pass.text,
+      );
+      await Navigator.push(
+          context, MaterialPageRoute(builder: (context) => HomePage()));
+    } on FirebaseAuthException catch (e) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text("Ops! Login Failed"),
+          content: Text('${e.message}'),
+        ),
+      );
+    }
+
+    // if (user != null) {
+    //   setState(() {
+    //     _success = true;
+    //   });
+    // } else {
+    //   _success = false;
+    // }
+  }
+
+  Future checkLogin() async {
+    final SharedPreferences sharedPreferences =
+        await SharedPreferences.getInstance();
+    sharedPreferences.setString('email', _email.text);
+  }
+
+  void signInWithPhone() async {
+    await _auth.signInWithPhoneNumber("+91${_email.text}");
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    checkLogin();
   }
 }
