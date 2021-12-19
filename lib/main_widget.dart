@@ -1,0 +1,94 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+class MainWidget extends StatefulWidget {
+  const MainWidget({Key? key}) : super(key: key);
+
+  @override
+  _MainWidgetState createState() => _MainWidgetState();
+}
+
+class _MainWidgetState extends State<MainWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          // Container(
+          //   margin: EdgeInsets.symmetric(horizontal: 30, vertical: 60),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //     children: [
+          //       const Text(
+          //         "MBX.",
+          //         style: TextStyle(
+          //           color: Colors.black,
+          //           fontFamily: 'Lato',
+          //           fontSize: 24,
+          //           fontWeight: FontWeight.bold,
+          //         ),
+          //       ),
+          //       Row(
+          //         mainAxisAlignment: MainAxisAlignment.spaceAround,
+          //         children: [
+          //           Container(
+          //             margin: EdgeInsets.symmetric(horizontal: 10),
+          //             child: SvgPicture.asset(
+          //               'assets/bell.svg',
+          //               height: 24,
+          //               width: 24,
+          //             ),
+          //           ),
+          //           Container(
+          //             margin: EdgeInsets.symmetric(horizontal: 10),
+          //             child: SvgPicture.asset(
+          //               'assets/cart.svg',
+          //               height: 24,
+          //               width: 24,
+          //             ),
+          //           ),
+          //           Container(
+          //             margin: EdgeInsets.symmetric(horizontal: 10),
+          //             child: SvgPicture.asset(
+          //               'assets/Favroite.svg',
+          //               height: 24,
+          //               width: 24,
+          //             ),
+          //           ),
+          //           Container(
+          //             margin: EdgeInsets.symmetric(horizontal: 10),
+          //             child: SvgPicture.asset(
+          //               'assets/Search.svg',
+          //               height: 24,
+          //               width: 24,
+          //             ),
+          //           ),
+          //           Container(
+          //             margin: EdgeInsets.symmetric(horizontal: 10),
+          //             child: SvgPicture.asset(
+          //               'assets/Menu.svg',
+          //               height: 17,
+          //               width: 15,
+          //             ),
+          //           ),
+          //         ],
+          //       )
+          //     ],
+          //   ),
+          // ),
+          // Center(
+          //   child: RaisedButton(
+          //     onPressed: () {
+          //       signOut();
+          //     },
+          //     child: Text("Sign out"),
+          //   ),
+          // )
+          // Center(
+          //     child: Lottie.asset("assets/loading.json",
+          //         frameRate: FrameRate(60), height: 250, width: 250)),
+        ],
+      ),
+    );
+  }
+}

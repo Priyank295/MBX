@@ -5,6 +5,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:custom_check_box/custom_check_box.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:developer';
+import 'package:get/get.dart';
+import 'package:mbx/homepage.dart';
 
 enum Gender { male, female }
 
@@ -457,6 +459,8 @@ class _Fill_ProfileState extends State<Fill_Profile> {
         "Address": _address.text,
         "Zip": _zip.text,
       },
-    ).then((value) => print("Document successfully updated!"));
+    ).then((value) {
+      Get.to(HomePage());
+    });
   }
 }
