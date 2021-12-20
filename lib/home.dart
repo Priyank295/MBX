@@ -74,13 +74,13 @@ class _HomeState extends State<Home> {
             ),
           ),
           sliderMenu: MenuWidget(
-            onItemClick: (title) {
-              _key.currentState!.closeDrawer();
-              setState(() {
-                this.title = title;
-              });
-            },
-          ),
+              // onItemClick: (title) {
+              //   _key.currentState!.closeDrawer();
+              //   setState(() {
+              //     this.title = title;
+              //   });
+              // },
+              ),
           sliderMain: MainWidget()),
     );
   }

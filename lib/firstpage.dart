@@ -26,7 +26,7 @@ class _FirstPageState extends State<FirstPage> {
       body: Stack(
         children: [
           SvgPicture.asset(
-            "f/vector1.svg",
+            "vector1.svg",
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
           ),

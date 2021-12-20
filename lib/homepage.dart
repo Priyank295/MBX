@@ -12,6 +12,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:mbx/searchpage.dart';
 import './home.dart';
+import './sellpage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -24,11 +25,12 @@ class _HomePageState extends State<HomePage> {
   int _index = 0;
 
   var padding = EdgeInsets.symmetric(horizontal: 18, vertical: 5);
-  double gap = 10;
+  double gap = 5;
 
   List<Color> colors = [
     Colors.purple,
     Colors.pink,
+    Colors.red,
     Colors.grey,
     Colors.teal,
   ];
@@ -43,6 +45,7 @@ class _HomePageState extends State<HomePage> {
   List<Widget> screen = [
     Home(),
     Search(),
+    SellPage(),
     Cart(),
     EditProfile(),
   ];
@@ -52,7 +55,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView.builder(
-          itemCount: 4,
+          itemCount: 5,
           controller: controller,
           onPageChanged: (page) {
             setState(() {
@@ -83,7 +86,7 @@ class _HomePageState extends State<HomePage> {
             iconSize: 24, // tab button icon size
             tabBackgroundColor:
                 Colors.purple.withOpacity(0.1), // selected tab background color
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             tabs: [
               GButton(
                 icon: LineIcons.home,
@@ -103,6 +106,16 @@ class _HomePageState extends State<HomePage> {
                 textColor: Colors.pink,
                 backgroundColor: Colors.pink.withOpacity(0.2),
                 // iconSize: 24,
+                //padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              ),
+              GButton(
+                icon: LineIcons.plusCircle,
+                iconColor: Colors.black,
+                iconActiveColor: Colors.red,
+                text: 'Sell',
+                textColor: Colors.red,
+                backgroundColor: Colors.red.withOpacity(0.2),
+                //iconSize: 24,
                 //padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               ),
               GButton(

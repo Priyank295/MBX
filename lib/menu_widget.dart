@@ -1,18 +1,21 @@
 import 'dart:ui';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:mbx/loginpage.dart';
+import './firstpage.dart';
 
 class MenuWidget extends StatefulWidget {
-  final Function(String)? onItemClick;
-  MenuWidget({required this.onItemClick});
+  // final Function(String)? onItemClick;
+  // MenuWidget({required this.onItemClick});
   @override
   _MenuWidgetState createState() => _MenuWidgetState();
 }
 
 class _MenuWidgetState extends State<MenuWidget> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -92,7 +95,9 @@ class _MenuWidgetState extends State<MenuWidget> {
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                sliderItem('LOG OUT', LineIcons.alternateSignOut),
+                InkWell(
+                    onTap: () => signOut(),
+                    child: sliderItem('LOG OUT', LineIcons.alternateSignOut)),
               ],
             )
           ],
@@ -102,18 +107,26 @@ class _MenuWidgetState extends State<MenuWidget> {
   }
 
   Widget sliderItem(String title, IconData icons) => ListTile(
-      title: Text(
-        title,
-        style: TextStyle(
-            color: Colors.white,
-            fontFamily: 'Lato',
-            fontWeight: FontWeight.bold),
-      ),
-      leading: Icon(
-        icons,
-        color: Colors.white,
-      ),
-      onTap: () {
-        widget.onItemClick!(title);
-      });
+        title: Text(
+          title,
+          style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'Lato',
+              fontWeight: FontWeight.bold),
+        ),
+        leading: Icon(
+          icons,
+          color: Colors.white,
+        ),
+      );
+
+  void signOut() async {
+    await _auth.signOut().then((value) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+          (route) => false);
+    });
+    _auth.currentUser;
+  }
 }
