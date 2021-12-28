@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:line_icons/line_icon.dart';
-import 'package:mbx/homepage.dart';
+import 'package:mbx/navbar.dart';
 import 'package:mbx/menu_widget.dart';
 import './main_widget.dart';
 import './menu_widget.dart';
@@ -67,10 +67,11 @@ class _HomeState extends State<Home> {
           ),
           slideDirection: SlideDirection.RIGHT_TO_LEFT,
           title: Container(
-            margin: EdgeInsets.only(top: 30),
-            child: Text(
-              title,
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+            margin: EdgeInsets.only(top: 25),
+            child: SvgPicture.asset(
+              "assets/logo.svg",
+              height: 40,
+              width: 40,
             ),
           ),
           sliderMenu: MenuWidget(

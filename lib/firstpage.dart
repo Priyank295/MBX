@@ -3,8 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mbx/loginpage.dart';
+import 'package:mbx/main_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import './homepage.dart';
+import 'navbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get/get.dart';
 
@@ -142,7 +143,7 @@ class _FirstPageState extends State<FirstPage> {
   @override
   void initState() {
     getValidationData().whenComplete(() async {
-      Get.to(finalEmail == null ? LoginPage() : HomePage());
+      Get.to(finalEmail == null ? LoginPage() : NavBar());
     });
     // _userIsSignIn();
     super.initState();

@@ -3,7 +3,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mbx/fill_profile.dart';
-import 'package:mbx/homepage.dart';
+import 'package:mbx/main_widget.dart';
+import 'package:mbx/navbar.dart';
 import 'package:otp_text_field/otp_text_field.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:otp_text_field/style.dart';
@@ -180,7 +181,7 @@ class _OtpPage2State extends State<OtpPage2> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => HomePage(),
+                                builder: (context) => NavBar(),
                               ),
                             );
                           }

@@ -6,7 +6,8 @@ import 'package:custom_check_box/custom_check_box.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:developer';
 import 'package:get/get.dart';
-import 'package:mbx/homepage.dart';
+import 'package:mbx/main_widget.dart';
+import 'package:mbx/navbar.dart';
 
 enum Gender { male, female }
 
@@ -460,7 +461,7 @@ class _Fill_ProfileState extends State<Fill_Profile> {
         "Zip": _zip.text,
       },
     ).then((value) {
-      Get.to(HomePage());
+      Get.to(NavBar());
     });
   }
 }

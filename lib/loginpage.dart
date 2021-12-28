@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:custom_check_box/custom_check_box.dart';
-import 'package:mbx/homepage.dart';
+import 'package:mbx/main_widget.dart';
+import 'package:mbx/navbar.dart';
 import 'package:mbx/otppage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:email_validator/email_validator.dart';
@@ -407,7 +408,7 @@ class _LoginPageState extends State<LoginPage> {
         password: _pass.text,
       );
       await Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HomePage()));
+          context, MaterialPageRoute(builder: (context) => NavBar()));
     } on FirebaseAuthException catch (e) {
       showDialog(
         context: context,
