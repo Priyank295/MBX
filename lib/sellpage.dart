@@ -3,6 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import "package:firebase_auth/firebase_auth.dart";
+import 'package:provider/provider.dart';
 
 class SellPage extends StatefulWidget {
   const SellPage({Key? key}) : super(key: key);
@@ -12,10 +14,24 @@ class SellPage extends StatefulWidget {
 }
 
 class _SellPageState extends State<SellPage> {
+  TextEditingController _pName = TextEditingController();
+  TextEditingController _price = TextEditingController();
+  TextEditingController _model = TextEditingController();
+  TextEditingController _description = TextEditingController();
+
+  bool _isName = false;
+  bool _isPrice = false;
+  bool _isModel = false;
+  bool _isDes = false;
+  late String user;
+  FirebaseFirestore _fire = FirebaseFirestore.instance;
+  FirebaseAuth _auth = FirebaseAuth.instance;
+
   @override
   void initState() {
     super.initState();
-    // writeData();
+    String uid = _auth.currentUser!.uid as String;
+    print(uid);
   }
 
   // Future<void> writeData() async {
@@ -106,20 +122,21 @@ class _SellPageState extends State<SellPage> {
                                   height: 50,
                                   width: 170,
                                   child: TextFormField(
+                                    controller: _pName,
                                     decoration: InputDecoration(
-                                      // suffixIcon: _isEmail
-                                      //     ? SizedBox()
-                                      //     : Padding(
-                                      //         padding: EdgeInsets.all(12.0),
-                                      //         child: SvgPicture.asset("assets/WarningCircle.svg"),
-                                      //       ),
+                                      suffixIcon: _isName
+                                          ? SizedBox()
+                                          : Padding(
+                                              padding: EdgeInsets.all(12.0),
+                                              child: SvgPicture.asset(
+                                                  "assets/WarningCircle.svg"),
+                                            ),
                                       prefixIconConstraints:
                                           const BoxConstraints(
                                         minHeight: 24,
                                         minWidth: 24,
                                       ),
                                       hintText: "Enter Product Name",
-
                                       hintStyle: const TextStyle(
                                         color: Color(0xFFFAEAEAE),
                                         fontFamily: "Lato",
@@ -170,13 +187,15 @@ class _SellPageState extends State<SellPage> {
                                   height: 50,
                                   width: 131,
                                   child: TextFormField(
+                                    controller: _price,
                                     decoration: InputDecoration(
-                                      // suffixIcon: _isEmail
-                                      //     ? SizedBox()
-                                      //     : Padding(
-                                      //         padding: EdgeInsets.all(12.0),
-                                      //         child: SvgPicture.asset("assets/WarningCircle.svg"),
-                                      //       ),
+                                      suffixIcon: _isPrice
+                                          ? SizedBox()
+                                          : Padding(
+                                              padding: EdgeInsets.all(12.0),
+                                              child: SvgPicture.asset(
+                                                  "assets/WarningCircle.svg"),
+                                            ),
                                       prefixIconConstraints:
                                           const BoxConstraints(
                                         minHeight: 14,
@@ -239,6 +258,7 @@ class _SellPageState extends State<SellPage> {
                             height: 50,
                             width: double.infinity,
                             child: TextFormField(
+                              controller: _model,
                               // validator: (val) {
                               //   if (!isEmail(val!) && !isPhone(val)) {
                               //     setState(() {
@@ -254,12 +274,13 @@ class _SellPageState extends State<SellPage> {
                                 //     "assets/mail.svg",
                                 //   ),
                                 // ),
-                                // suffixIcon: _isEmail
-                                //     ? SizedBox()
-                                //     : Padding(
-                                //         padding: EdgeInsets.all(12.0),
-                                //         child: SvgPicture.asset("assets/WarningCircle.svg"),
-                                //       ),
+                                suffixIcon: _isModel
+                                    ? SizedBox()
+                                    : Padding(
+                                        padding: EdgeInsets.all(12.0),
+                                        child: SvgPicture.asset(
+                                            "assets/WarningCircle.svg"),
+                                      ),
                                 prefixIconConstraints: const BoxConstraints(
                                   minHeight: 24,
                                   minWidth: 24,
@@ -310,6 +331,7 @@ class _SellPageState extends State<SellPage> {
                             height: 49,
                             width: double.infinity,
                             child: TextFormField(
+                              controller: _description,
                               keyboardType: TextInputType.multiline,
                               maxLines: null,
                               // validator: (val) {
@@ -327,12 +349,13 @@ class _SellPageState extends State<SellPage> {
                                 //     "assets/mail.svg",
                                 //   ),
                                 // ),
-                                // suffixIcon: _isEmail
-                                //     ? SizedBox()
-                                //     : Padding(
-                                //         padding: EdgeInsets.all(12.0),
-                                //         child: SvgPicture.asset("assets/WarningCircle.svg"),
-                                //       ),
+                                suffixIcon: _isDes
+                                    ? SizedBox()
+                                    : Padding(
+                                        padding: EdgeInsets.all(12.0),
+                                        child: SvgPicture.asset(
+                                            "assets/WarningCircle.svg"),
+                                      ),
                                 prefixIconConstraints: const BoxConstraints(
                                   minHeight: 24,
                                   minWidth: 24,
@@ -370,34 +393,58 @@ class _SellPageState extends State<SellPage> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 30),
                           child: Center(
-                            child: Container(
-                              height: 54,
-                              width: 340,
-                              decoration: BoxDecoration(
-                                color: Color(0xFFF6342E8),
-                                borderRadius: BorderRadius.circular(56),
-                              ),
-                              child: Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(
-                                      'assets/cart.svg',
-                                      color: Colors.white,
-                                      height: 24,
-                                      width: 24,
-                                    ),
-                                    SizedBox(width: 5),
-                                    Text(
-                                      "PROCEED TO SELL",
-                                      style: TextStyle(
-                                        fontFamily: "Lato",
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
+                            child: InkWell(
+                              onTap: () {
+                                _pName.text.isEmpty
+                                    ? _isName = false
+                                    : _isName = true;
+                                _model.text.isEmpty
+                                    ? _isModel = false
+                                    : _isModel = true;
+                                _price.text.isEmpty
+                                    ? _isPrice = false
+                                    : _isPrice = true;
+                                _description.text.isEmpty
+                                    ? _isDes = false
+                                    : _isDes = true;
+
+                                if (_isName == false ||
+                                    _isDes == false ||
+                                    _isModel == false ||
+                                    _isPrice == false) {
+                                } else {
+                                  addData();
+                                }
+                              },
+                              child: Container(
+                                height: 54,
+                                width: 340,
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFF6342E8),
+                                  borderRadius: BorderRadius.circular(56),
+                                ),
+                                child: Center(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SvgPicture.asset(
+                                        'assets/cart.svg',
                                         color: Colors.white,
+                                        height: 24,
+                                        width: 24,
                                       ),
-                                    ),
-                                  ],
+                                      SizedBox(width: 5),
+                                      Text(
+                                        "PROCEED TO SELL",
+                                        style: TextStyle(
+                                          fontFamily: "Lato",
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -413,5 +460,11 @@ class _SellPageState extends State<SellPage> {
         ],
       ),
     );
+  }
+
+  Future<void> addData() async {
+    final User? user = _auth.currentUser;
+
+    // _fire.collection("users").doc()
   }
 }
