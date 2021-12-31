@@ -112,15 +112,15 @@ class _FirstPageState extends State<FirstPage> {
     );
   }
 
-  Future getValidationData() async {
-    final SharedPreferences sharedPreferences =
-        await SharedPreferences.getInstance();
-    var obtainedEmail = sharedPreferences.getString('email');
-    setState(() {
-      finalEmail = obtainedEmail!;
-    });
-    print(finalEmail);
-  }
+  // Future getValidationData() async {
+  //   final SharedPreferences sharedPreferences =
+  //       await SharedPreferences.getInstance();
+  //   var obtainedEmail = sharedPreferences.getString('email');
+  //   setState(() {
+  //     finalEmail = obtainedEmail!.toString();
+  //   });
+  //   print(finalEmail);
+  // }
 
   // _userIsSignIn() async {
   //   if (_auth.currentUser != null) {
@@ -140,12 +140,12 @@ class _FirstPageState extends State<FirstPage> {
   //   }
   // }
 
-  @override
-  void initState() {
-    getValidationData().whenComplete(() async {
-      Get.to(finalEmail == null ? LoginPage() : NavBar());
-    });
-    // _userIsSignIn();
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   getValidationData().whenComplete(() async {
+  //     Get.to(finalEmail == null ? LoginPage() : NavBar());
+  //   });
+  //   // _userIsSignIn();
+  //   super.initState();
+  // }
 }

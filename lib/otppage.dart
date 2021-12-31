@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mbx/fill_profile.dart';
@@ -12,12 +13,22 @@ import './register.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pinput/pin_put/pin_put.dart';
 import 'package:pinput/pin_put/pin_put_state.dart';
+import './navbar.dart';
+
+FirebaseAuth _auth = FirebaseAuth.instance;
 
 class OtpPage2 extends StatefulWidget {
   String Phone = "";
+  String Email;
+  String Pass;
   late String uid;
 
-  OtpPage2({Key? key, required this.Phone, required this.uid})
+  OtpPage2(
+      {Key? key,
+      required this.Phone,
+      required this.uid,
+      required this.Email,
+      required this.Pass})
       : super(key: key);
 
   @override
@@ -25,7 +36,6 @@ class OtpPage2 extends StatefulWidget {
 }
 
 class _OtpPage2State extends State<OtpPage2> {
-  FirebaseAuth _auth = FirebaseAuth.instance;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   final TextEditingController otptext = TextEditingController();
   final FocusNode _otpnode = FocusNode();
@@ -178,12 +188,20 @@ class _OtpPage2State extends State<OtpPage2> {
                                 smsCode: pin))
                             .then((value) async {
                           if (value.user != null) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => NavBar(),
-                              ),
-                            );
+                            if (user == null) {
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          Fill_Profile(uid: value.user!.uid)),
+                                  (route) => false);
+                            } else {
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => NavBar()),
+                                  (route) => false);
+                            }
                           }
                         });
                       } catch (e) {
@@ -242,6 +260,8 @@ class _OtpPage2State extends State<OtpPage2> {
     _scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text(message)));
   }
 
+  User? user = _auth.currentUser;
+
   _verifyPhone() async {
     await _auth.verifyPhoneNumber(
         phoneNumber: "+91${widget.Phone}",
@@ -249,12 +269,31 @@ class _OtpPage2State extends State<OtpPage2> {
           await FirebaseAuth.instance
               .signInWithCredential(credential)
               .then((value) async {
+            FirebaseFirestore.instance
+                .collection("users")
+                .doc(value.user!.uid)
+                .set({
+              "Uid": value.user!.uid,
+              "Email": widget.Email,
+              "Phone": widget.Phone,
+              "Password": widget.Pass,
+            });
             if (value.user != null) {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Fill_Profile(uid: uid)),
-                  (route) => false);
+              print(value.user!.uid);
+
+              if (user == null) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            Fill_Profile(uid: value.user!.uid)),
+                    (route) => false);
+              } else {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => NavBar()),
+                    (route) => false);
+              }
             }
           });
         },

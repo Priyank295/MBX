@@ -2,8 +2,11 @@
     package="com.example.mbx">
     <uses-permission android:name="android.permission.INTERNET" />
    <application
+        android:requestLegacyExternalStorage="true"
         android:label="mbx"
         android:icon="@mipmap/ic_launcher">
+    
+        
         
         <activity
             android:name=".MainActivity"

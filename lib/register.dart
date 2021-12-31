@@ -399,11 +399,15 @@ class _RegisterPageState extends State<RegisterPage> {
                   } else {
                     signUpWithEmail(email.text, _pass.text);
                     // phoneNumberVerification();
-                    addUser();
+                    // addUser();
 
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            OtpPage2(Phone: _phone.text, uid: uid)));
+                        builder: (context) => OtpPage2(
+                              Phone: _phone.text,
+                              uid: uid,
+                              Email: email.text,
+                              Pass: _pass.text,
+                            )));
 
                     setState(() {
                       _loading = false;

@@ -9,7 +9,7 @@ import 'package:mbx/otppage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:email_validator/email_validator.dart';
 
-late String uid;
+String uid = "";
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -28,6 +28,8 @@ class _LoginPageState extends State<LoginPage> {
   bool _success = false;
   bool _isEmail = true;
   bool _isPass = true;
+  String Email = "";
+  String Pass = "";
   bool isPhone(String input) =>
       RegExp(r'^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$')
           .hasMatch(input);
@@ -331,8 +333,11 @@ class _LoginPageState extends State<LoginPage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                OtpPage2(Phone: _email.text, uid: uid)));
+                            builder: (context) => OtpPage2(
+                                Phone: _email.text,
+                                uid: uid,
+                                Email: Email,
+                                Pass: Pass)));
                   }
 
                   // if (_success == true) {

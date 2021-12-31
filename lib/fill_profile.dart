@@ -6,13 +6,14 @@ import 'package:custom_check_box/custom_check_box.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:developer';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
 import 'package:mbx/main_widget.dart';
 import 'package:mbx/navbar.dart';
 
 enum Gender { male, female }
 
 class Fill_Profile extends StatefulWidget {
-  late String uid;
+  String uid;
   Fill_Profile({required this.uid});
   @override
   _Fill_ProfileState createState() => _Fill_ProfileState();
@@ -461,7 +462,8 @@ class _Fill_ProfileState extends State<Fill_Profile> {
         "Zip": _zip.text,
       },
     ).then((value) {
-      Get.to(NavBar());
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => NavBar()));
     });
   }
 }
